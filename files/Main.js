@@ -33,8 +33,12 @@ function include(filename){
     .getContent();
 };
 
-function formatButton(inputField) {
-    formatText(inputField);
+function formatButton(inputfieldBp, inputFieldBo) {
+    var split1 = formatText(inputfieldBp);
+    var split2 = formatText(inputFieldBo);
+    Logger.log(split1);
+    Logger.log(split2);
+
     setupSideBar();
 } 
 
@@ -43,13 +47,12 @@ function setCell(row, inputIndex, output) {
     .setValue(output);
 }
 
-// Dit is een test
-
 function formatText(inputField) {
   //var split = inputField.split(/  +/g); deze split bij meerdere whitespaces
   var split = inputField.split(/\b\n/);
   for(var i = 0; i < split.length; i++) {
-    split[i] = split[i].replace(/[^a-z]/gi, '');
+    split[i] = split[i].replace(/\s\s+/g, ' ')
   }
-  Logger.log(split);
+
+  return split;
 }

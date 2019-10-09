@@ -2,8 +2,9 @@
   //document.getElementById("btn").addEventListener("click", buttonClick);
 
   function buttonClick() {
-    var inputField = document.getElementById("inputField").value;
+    var inputFieldBp = document.getElementById("inputField_bp").value;
+    var inputFieldBo = document.getElementById("inputField_bo").value;
 
-    google.script.run.formatButton(inputField);
+    google.script.run.formatButton(inputFieldBp, inputFieldBo);
   }
 </script>
