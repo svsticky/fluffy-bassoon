@@ -8,25 +8,22 @@
   <body>
     <img src="https://svsticky.nl/static/sticky-logo-e6407c178cd524c3ac97df8d120532ac.svg"></img>
 
-        <form>
+    <div id="error"></div>
+        <form id="form">
   
           <div class="wrap-input100" data-validate = "Input is required">
             <span class="label-input100">Bestelde producten</span>
-            <textarea class="input100" id="inputField_bp" name="input" placeholder="Paste 'Bestelde prodcucten' here..."></textarea>
+            <textarea class="input100" id="inputField_bp" name="input" placeholder="Paste 'Bestelde prodcucten' here..." required></textarea>
             <span class="focus-input100"></span>
           </div>
-  
-        </form>
-
-        <form>
   
           <div class="wrap-input100" data-validate = "Input is required">
             <span class="label-input100">Besteloverzicht</span>
-            <textarea class="input100" id="inputField_bo" name="input" placeholder="Paste 'Besteloverzicht' here..."></textarea>
+            <textarea class="input100" id="inputField_bo" name="input" placeholder="Paste 'Besteloverzicht' here..." required></textarea>
             <span class="focus-input100"></span>
           </div>
   
-          <button id="btn" onclick="buttonClick()">Format</button>
+          <button type="submit" id="btn" onclick="buttonClick()">Format</button>
         </form>
 
   </body>
