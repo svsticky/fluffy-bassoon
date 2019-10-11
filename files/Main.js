@@ -63,11 +63,11 @@ function formatText(inputField) {
     numbers.push(newNumber);
 
     var newPrice = split[i].match(/(\d+\,\d{1,2})/g);
-    var newPrice = newPrice[0].replace(",", ".");
-    prices.push(parseFloat(newPrice));
+    var newPriceDot = newPrice[0].replace(",", ".");
+    prices.push(parseFloat(newPriceDot));
 
     split[i] = split[i].replace(newNumber, "");
-    split[i] = split[i].replace(newPrice, "");
+    split[i] = split[i].replace('€ ' + newPrice, "");
   }
   return [split, numbers, prices];
 }
