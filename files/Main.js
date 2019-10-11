@@ -1,25 +1,68 @@
+/**
+ * This script duplicates a template sheet and renamed it to the current date
+ * Version: 1.0
+ * Created by Yorick van Zweeden; Bestuur 11 Hoogh!
+ */
+
+//Name of the sheet to be duplicated
+var templateName = "Template"
+
+/**
+ * This script duplicates a template sheet and renamed it to the current date
+ */
+function onOpen() {
+  var submenu = [{name:"Nieuwe factuur", functionName:"duplicateTab"}]
+  SpreadsheetApp.getActiveSpreadsheet().addMenu('Facturen', submenu);
+  
+  var submenuBassoon = [{name:"Formatter", functionName:"setupSideBar"}]
+  SpreadsheetApp.getActiveSpreadsheet().addMenu('Fluffy Bassoon', submenuBassoon);
+}
+
+/**
+ * Duplicates sheet and renames
+ */
+function duplicateTab() {
+  //Get active sheet 
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName('Template').copyTo(ss);
+  
+  //Get today
+  var today = getDate();
+  
+  //Rename sheet
+  var old = ss.getSheetByName(today);
+  if (old) today = today + " (2)";
+  sheet.setName(today);
+
+  //Set new sheet as active sheet
+  ss.setActiveSheet(sheet);
+}
+
+/**
+ * Gets current date formatted as YYYY-MM-DD
+ */
+function getDate() {
+    var d = new Date(),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+
+    return [year, month, day].join('-');
+}
+
+/**
+* Fluffy Bassoon
+*/
+
 // --Globals--
 // Current File
 var ui = SpreadsheetApp.getUi();
 
-//Set up the Menu Dropdown.
-function onOpen(e) {
-  /*ui.createMenu("Multi HTML")
-    .addItem("Formatter", "setupSideBar")
-    .addToUi();*/
-
-    var submenu = [{name:"Formatter", functionName:"setupSideBar"}]
-    SpreadsheetApp.getActiveSpreadsheet().addMenu('Fluffy Bassoon', submenu);
-}
-
-//Set up for first time use.
-function onInstall(e) {
-  ui.alert("Starting");
-  onOpen();
-}
-
 function setupSideBar() {
-  var html = HtmlService.createTemplateFromFile("Index").evaluate();
+  var html = HtmlService.createTemplateFromFile("index").evaluate();
   //Once created it becomes a HtmlOutput
   html.setTitle("Formatter");
   ui.showSidebar(html);
