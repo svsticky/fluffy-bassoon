@@ -21,6 +21,10 @@ Stocky reborn
 * copy the .json and .clasp.json in your cloned repo.
 * you now have your own test environment.
 
+## Testing
+you can test the code as a addon. Go to "Run" in the menu and select "test as addon". you can select your options and the file you want to test it in.
+the addon is our test environment. Final versions of the project will be deployed to the code begind the spreadsheet and everything will be used as a menu option.
+
 ## Clasp functions
 * clasp create: create a new google scripts project on your account.
 * clasp push: push all your code to a google scripts project.
