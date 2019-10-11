@@ -6,4 +6,14 @@
 
     google.script.run.formatButton(inputFieldBp, inputFieldBo);
   }
+
+  function manualHide() {
+    var field = document.getElementById('manual');
+
+    if(field.style.display === "none") {
+      field.style.display = "block";
+    } else {
+      field.style.display = "none";
+    }
+  }
 </script>

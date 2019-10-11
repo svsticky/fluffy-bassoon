@@ -8,6 +8,18 @@
   <body>
     <img src="https://svsticky.nl/static/sticky-logo-e6407c178cd524c3ac97df8d120532ac.svg"></img>
 
+    <button onclick="manualHide()">Manual</button>
+
+    <div id="manual" style="display: none;">
+      <h1>How to use</h1>
+      <ul>
+        <li>copy everything underneath: "bestelde producten". (start with the first number, don't copy "Bestelde producten").</li></br>
+        <li>paste the data into the textField with the name: "bestelde producten".</li></br>
+        <li><b>Make sure that the last symbol in de field is a number/letter/etc. and not a whitespace.</b></li></br>
+        <li>click on the "Format" button.</li>
+      </ul>
+    </div>
+
     <div id="error"></div>
         <form id="form" action="javascript:buttonClick()">
   
@@ -19,7 +31,7 @@
   
           <div class="wrap-input100" data-validate = "Input is required">
             <span class="label-input100">Besteloverzicht</span>
-            <textarea class="input100" id="inputField_bo" name="input" placeholder="Paste 'Besteloverzicht' here..." required></textarea>
+            <textarea class="input100" id="inputField_bo" name="input" placeholder="Paste 'Besteloverzicht' here..."></textarea>
             <span class="focus-input100"></span>
           </div>
   

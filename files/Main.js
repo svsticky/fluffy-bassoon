@@ -4,9 +4,12 @@ var ui = SpreadsheetApp.getUi();
 
 //Set up the Menu Dropdown.
 function onOpen(e) {
-  ui.createMenu("Multi HTML")
+  /*ui.createMenu("Multi HTML")
     .addItem("Formatter", "setupSideBar")
-    .addToUi();
+    .addToUi();*/
+
+    var submenu = [{name:"Formatter", functionName:"setupSideBar"}]
+    SpreadsheetApp.getActiveSpreadsheet().addMenu('Fluffy Bassoon', submenu);
 }
 
 //Set up for first time use.
