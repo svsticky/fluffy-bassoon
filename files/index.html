@@ -8,16 +8,27 @@
   <body>
     <img src="https://svsticky.nl/static/sticky-logo-e6407c178cd524c3ac97df8d120532ac.svg"></img>
 
-    <button onclick="manualHide()">Manual</button>
+    <button onclick="manualHide()" id="manual-btn">Show/Hide Manual</button>
 
     <div id="manual" style="display: none;">
-      <h1>How to use</h1>
-      <ul>
-        <li>copy everything underneath: "bestelde producten". (start with the first number, don't copy "Bestelde producten").</li></br>
-        <li>paste the data into the textField with the name: "bestelde producten".</li></br>
-        <li><b>Make sure that the last symbol in de field is a number/letter/etc. and not a whitespace.</b></li></br>
-        <li>click on the "Format" button.</li>
-      </ul>
+
+      <div class="manual-content">
+        <img src="https://drive.google.com/uc?export=download&id=1l_1DGESushHczwxt2Kg7t6pDCu84DmAE" alt="">
+        <h3>step 1</h3>
+        <p>copy everything underneath: "bestelde producten". </br><b>(start with the first number, don't copy "Bestelde producten").</b></p>
+      </div>
+
+      <div class="manual-content">
+        <img src="https://drive.google.com/uc?export=download&id=16xmgc8c7RKJ4o_aQnwUngztKmi0Y_IMz" alt="">
+        <h3>step 2</h3>
+        <p>paste the data into the textField with the name: "bestelde producten".</br><b>Make sure that the last symbol in de field is a number/letter/etc. and not a whitespace.</b></p>
+      </div>
+
+      <div class="manual-content">
+            <h3>step 3</h3>
+        <p>click on the "Format" button.</p>
+      </div>
+
     </div>
 
     <div id="error"></div>
