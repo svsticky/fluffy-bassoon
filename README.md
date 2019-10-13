@@ -4,7 +4,7 @@ Stocky reborn
 ## Using the program
 * copy everything underneath: "bestelde producten". (start with the first number, don't copy "Bestelde producten").
 * paste the data into the textField with the name: "bestelde producten".
-* Make sure that the last symbol in de field is a number/letter/etc. and not a whitespace.
+* Make sure that you only copy products from the "bestelde producten".
 * click on the "Format" button.
 
 ## Starting up

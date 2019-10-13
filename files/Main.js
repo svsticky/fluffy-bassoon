@@ -106,19 +106,27 @@ function formatText(inputField) {
   var split = inputField.split(/\b\n/);
   var numbers = [];
   var prices = [];
+  var names = [];
 
   for (var i = 0; i < split.length; i++) {
-    split[i] = split[i].replace(/\s\s+/g, " ");
+    var currentName = split[i].replace(/\s\s+/g, " ");
+
+    if(currentName === " "){continue;}
 
     var newNumber = parseFloat(split[i]);
-    numbers.push(newNumber);
-
-    var newPrice = split[i].match(/(\d+\,\d{1,2})/g);
+    
+    var newPrice = currentName.match(/(\d+\,\d{1,2})/g);
     var newPriceDot = newPrice[0].replace(",", ".");
-    prices.push(parseFloat(newPriceDot));
+    var priceAsFloat = parseFloat(newPriceDot);
 
-    split[i] = split[i].replace(newNumber, "");
-    split[i] = split[i].replace('€ ' + newPrice, "");
+    if(priceAsFloat === 0.0){continue;}
+
+    currentName = currentName.replace(newNumber, "");
+    currentName = currentName.replace('€ ' + newPrice, "");
+
+    numbers.push(newNumber);
+    names.push(currentName);
+    prices.push(priceAsFloat);
   }
-  return [split, numbers, prices];
+  return [names, numbers, prices];
 }
