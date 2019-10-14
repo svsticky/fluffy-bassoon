@@ -1,0 +1,38 @@
+header {
+  height: 50px;
+  background-color: #222533;
+  line-height: 50px;
+  padding-left: 10px;
+
+  h1 {
+    margin: 0;
+    color: #ffffff;
+    font-size: 25px;
+  }
+}
+
+nav {
+  position: absolute;
+  width: 170px;
+  height: calc(100vh - 50px);
+  float: left;
+  background-color: #f8f8f8;;
+  color: #767676;
+  border-right: 2px solid #e5e5e5;
+  
+  a {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    padding: 10px 0 10px 20px;
+    border-bottom: 1px solid #797979;
+
+    &:hover {
+      background-color: #c4c4c4;
+    }
+  }
+}
+
+main {
+  margin-left: 190px;
+}

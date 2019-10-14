@@ -1,0 +1,10 @@
+<article>
+  <h2>Mongoose Stock</h2>
+  <button mat-button (click)="addProduct()">+</button>
+</article>
+<section *ngFor="let item of stockData; let i = index" [class.hidden]="!item.visible_checkout " (click)="editWindow(i)">
+  <h3>{{ item.product_name }}</h3>
+  <p>
+    {{ item.amount_available }}
+  </p>
+</section>

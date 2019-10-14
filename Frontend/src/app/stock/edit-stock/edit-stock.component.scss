@@ -1,0 +1,11 @@
+.mat-dialog-title {
+  margin: 0;
+}
+
+mat-dialog-content {
+  display: inherit;
+
+  mat-form-field {
+    width: 100%;
+  }
+}

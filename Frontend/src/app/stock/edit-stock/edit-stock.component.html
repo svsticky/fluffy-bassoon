@@ -1,0 +1,15 @@
+<h1 mat-dialog-title>Edit stock - {{ product.product_name }}</h1>
+<mat-dialog-content>
+  <form [formGroup]="updateForm">
+    <mat-form-field>
+      <label for="amount_available">
+        Amount
+      </label>
+      <input matInput id="amount_available" type="number" formControlName="amount_available">
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button mat-dialog-close>Go back</button>
+  <button mat-button [mat-dialog-close]="updateForm.value" cdkFocusInitial>Update</button>
+</mat-dialog-actions>
