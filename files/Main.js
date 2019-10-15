@@ -83,13 +83,10 @@ function formatButton(inputfieldBp, inputFieldBo) {
   var products = formatText(inputfieldBp);
   //var overview = formatText(inputFieldBo);
 
-  var productNames = products[0];
-  var productNumbers = products[1];
-  var productPrices = products[2];
-  for (var i = 2; i <= productNames.length + 1; i++) {
-    setCell("A", i, productNames[i - 2]);
-    setCell("G", i, productNumbers[i - 2]);
-    setCell("B", i, productPrices[i - 2]);
+  for (var i = 2; i <= products.length + 1; i++) {
+    setCell("A", i, products[i - 2].Name);
+    setCell("G", i, products[i - 2].Amount);
+    setCell("B", i, products[i - 2].Price);
   }
 
   setupSideBar();
@@ -104,9 +101,7 @@ function setCell(row, inputIndex, output) {
 //whitespaces: /\s+ /g
 function formatText(inputField) {
   var split = inputField.split(/\b\n/);
-  var numbers = [];
-  var prices = [];
-  var names = [];
+  var products = [];
 
   for (var i = 0; i < split.length; i++) {
     var currentName = split[i].replace(/\s\s+/g, " ");
@@ -124,9 +119,20 @@ function formatText(inputField) {
     currentName = currentName.replace(newNumber, "");
     currentName = currentName.replace('€ ' + newPrice, "");
 
-    numbers.push(newNumber);
-    names.push(currentName);
-    prices.push(priceAsFloat);
+
+    var product = {Name : currentName, Amount : newNumber, Price : priceAsFloat};
+    products.push(product);
   }
-  return [names, numbers, prices];
+  products.sort(compareProducts);
+  return products;
+}
+
+function compareProducts( a, b ) {
+  if ( a.Name < b.Name ){
+    return -1;
+  }
+  if ( a.Name > b.Name ){
+    return 1;
+  }
+  return 0;
 }
