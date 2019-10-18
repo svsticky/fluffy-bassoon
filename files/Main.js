@@ -80,9 +80,8 @@ function include(filename) {
 }
 
 function formatButton(inputfieldBp, inputFieldBo) {
-  calculateDiscounts(inputFieldBo);
+  //calculateDiscounts(inputFieldBo);
   var products = formatText(inputfieldBp);
-  //var overview = formatText(inputFieldBo);
 
   for (var i = 2; i <= products.length + 1; i++) {
     setCell("A", i, products[i - 2].Name);
@@ -109,8 +108,23 @@ function formatText(inputField) {
 
     if(currentName === " "){continue;}
 
-    var newNumber = parseFloat(split[i]);
-    
+    var newNumber = parseInt(split[i]);
+    var checkGrams = split[i].match(/\d+[g]/g);
+
+    if(checkGrams != null) {
+      grams = checkGrams[0].replace("g", "");
+      if(grams == newNumber) {
+        newNumber = 1;
+        currentName = currentName.replace(checkGrams[0], "");
+      }
+      else {
+        currentName = currentName.replace(newNumber, "");
+      }
+    }
+    else {
+      currentName = currentName.replace(newNumber, "");
+    }
+
     var newPrice = currentName.match(/(€ \d+\,\d{1,2})/g);
     newPrice = newPrice[0].match(/(\d+\,\d{1,2})/g);
     var newPriceDot = newPrice[0].replace(",", ".");
@@ -118,9 +132,7 @@ function formatText(inputField) {
 
     if(priceAsFloat === 0.0){continue;}
 
-    currentName = currentName.replace(newNumber, "");
     currentName = currentName.replace('€ ' + newPrice, "");
-
 
     var product = {Name : currentName, Amount : newNumber, Price : priceAsFloat};
     products.push(product);
