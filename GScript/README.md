@@ -1,5 +1,4 @@
-# fluffy-bassoon
-Stocky reborn
+# Fluffy Bassoon GScript
 
 ## Using the program
 * copy everything underneath: "bestelde producten". (start with the first number, don't copy "Bestelde producten").
