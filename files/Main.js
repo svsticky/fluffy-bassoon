@@ -141,17 +141,6 @@ function formatText(inputField) {
   return products;
 }
 
-function compareProducts( a, b ) {
-  if ( a.Name < b.Name ){
-    return -1;
-  }
-  if ( a.Name > b.Name ){
-    return 1;
-  }
-  return 0;
-}
-
-
 function calculateDiscounts(discountfield){
   var dict = {};
   var splitOnLines = discountfield.split(/\b\n/);
@@ -172,7 +161,12 @@ function calculateDiscounts(discountfield){
   Logger.log(dict);
 }
 
-
-//Status: nu zijn per kortingsbeschrijving de kortingen samengevat, deze moeten alleen omgezet worden naar de juiste kortingen per product.
-//Probleem: Vanwege overeenkomsten in productnamen kan dit niet volledig automatisch, daarom is er voor sommige waar twijfel over is input nodig van de gebruiker.
-//Oplossing: pop-up met user input waar hij/zij de juiste producten aan de juiste kortingsgroep kan linken, daarna input verwerken en korting automatisch doorwerken.
+function compareProducts( a, b ) {
+  if ( a.Name < b.Name ){
+    return -1;
+  }
+  if ( a.Name > b.Name ){
+    return 1;
+  }
+  return 0;
+}
