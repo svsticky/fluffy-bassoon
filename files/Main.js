@@ -80,6 +80,7 @@ function include(filename) {
 }
 
 function formatButton(inputfieldBp, inputFieldBo) {
+  calculateDiscounts(inputFieldBo);
   var products = formatText(inputfieldBp);
   //var overview = formatText(inputFieldBo);
 
@@ -136,3 +137,29 @@ function compareProducts( a, b ) {
   }
   return 0;
 }
+
+
+function calculateDiscounts(discountfield){
+  var dict = {};
+  var splitOnLines = discountfield.split(/\b\n/);
+  Logger.log(parseFloat("1.234"));
+  
+
+  for(var i = 0; i < splitOnLines.length; i++){
+    var split = splitOnLines[i].split("€");
+    split[1] = split[1].replace(",",".");
+    if(dict[split[0]] == null){
+      //Logger.log(split[0]);
+      dict[split[0]] = parseFloat(split[1]);
+    }
+    else{
+      dict[split[0]] += parseFloat(split[1]);
+    }
+  }
+  Logger.log(dict);
+}
+
+
+//Status: nu zijn per kortingsbeschrijving de kortingen samengevat, deze moeten alleen omgezet worden naar de juiste kortingen per product.
+//Probleem: Vanwege overeenkomsten in productnamen kan dit niet volledig automatisch, daarom is er voor sommige waar twijfel over is input nodig van de gebruiker.
+//Oplossing: pop-up met user input waar hij/zij de juiste producten aan de juiste kortingsgroep kan linken, daarna input verwerken en korting automatisch doorwerken.
