@@ -111,7 +111,8 @@ function formatText(inputField) {
 
     var newNumber = parseFloat(split[i]);
     
-    var newPrice = currentName.match(/(\d+\,\d{1,2})/g);
+    var newPrice = currentName.match(/(€ \d+\,\d{1,2})/g);
+    newPrice = newPrice[0].match(/(\d+\,\d{1,2})/g);
     var newPriceDot = newPrice[0].replace(",", ".");
     var priceAsFloat = parseFloat(newPriceDot);
 
