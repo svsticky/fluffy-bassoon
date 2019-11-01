@@ -97,8 +97,6 @@ function setCell(row, inputIndex, output) {
   currentSheet.getRange(row + inputIndex).setValue(output);
 }
 
-// euro: /(€\d+\.\d{1,2})/g
-//whitespaces: /\s+ /g
 function formatText(inputField) {
   var split = inputField.split(/\b\n/);
   var products = [];
@@ -151,10 +149,9 @@ function calculateDiscounts(discountfield){
     var split = splitOnLines[i].split("€");
     split[1] = split[1].replace(",",".");
     if(dict[split[0]] == null){
-      //Logger.log(split[0]);
       dict[split[0]] = parseFloat(split[1]);
     }
-    else{
+    else {
       dict[split[0]] += parseFloat(split[1]);
     }
   }
