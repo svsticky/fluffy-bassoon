@@ -75,6 +75,7 @@ function onEdit(e) {
     right : 3
   };
 
+  Logger.log(discountDict);
   // Exit if we're out of range
   var thisRow = e.range.getRow();
   if (thisRow < editRange.top || thisRow > editRange.bottom) return;
@@ -84,20 +85,19 @@ function onEdit(e) {
 
   if(discountDict.length == 0) return;
 
-  getValue = SpreadsheetApp.getActiveSheet().getRange(thisRow, thisCol).getValue();
+  var getValue = SpreadsheetApp.getActiveSheet().getRange(thisRow, thisCol).getValue();
   
-  if(getValue == "Error" || getValue == "Dict is empty" || parseFLoat(getValue) >= 0) return;
+  if(getValue == "Error" || getValue == "Dict is empty") return;
   
   if(discountDict[getValue] != null) {
-    newValue = discountDict[getValue];
-  } else {
-    newValue = "Error";
+    var newValue = discountDict[getValue];
+    // We're in range; timestamp the edit
+    var ss = e.range.getSheet();
+    ss.getRange(thisRow,thisCol)
+    .setValue(newValue);
   }
 
-  // We're in range; timestamp the edit
-  var ss = e.range.getSheet();
-  ss.getRange(thisRow,thisCol)
-    .setValue(newValue);
+  
 }
 
 function setupSideBar() {
