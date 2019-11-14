@@ -11,6 +11,7 @@
 //Name of the sheet to be duplicated
 var templateName = "Template"
 var ui = SpreadsheetApp.getUi();
+var discountDict = {};
 /**
  * This script duplicates a template sheet and renamed it to the current date
  */
@@ -66,6 +67,39 @@ function getDate() {
 * Fluffy Bassoon
 */
 
+function onEdit(e) {
+  var editRange = { // B2:B51
+    top : 2,
+    bottom : 51,
+    left : 3,
+    right : 3
+  };
+
+  // Exit if we're out of range
+  var thisRow = e.range.getRow();
+  if (thisRow < editRange.top || thisRow > editRange.bottom) return;
+
+  var thisCol = e.range.getColumn();
+  if (thisCol < editRange.left || thisCol > editRange.right) return;
+
+  if(discountDict.length == 0) return;
+
+  getValue = SpreadsheetApp.getActiveSheet().getRange(thisRow, thisCol).getValue();
+  
+  if(getValue == "Error" || getValue == "Dict is empty" || parseFLoat(getValue) >= 0) return;
+  
+  if(discountDict[getValue] != null) {
+    newValue = discountDict[getValue];
+  } else {
+    newValue = "Error";
+  }
+
+  // We're in range; timestamp the edit
+  var ss = e.range.getSheet();
+  ss.getRange(thisRow,thisCol)
+    .setValue(newValue);
+}
+
 function setupSideBar() {
   var html = HtmlService.createTemplateFromFile("index").evaluate();
   //Once created it becomes a HtmlOutput
@@ -80,7 +114,7 @@ function include(filename) {
 }
 
 function formatButton(inputfieldBp, inputFieldBo) {
-  //calculateDiscounts(inputFieldBo);
+  calculateDiscounts(inputFieldBo);
   var products = formatText(inputfieldBp);
 
   for (var i = 2; i <= products.length + 1; i++) {
@@ -139,22 +173,33 @@ function formatText(inputField) {
 }
 
 function calculateDiscounts(discountfield){
-  var dict = {};
   var splitOnLines = discountfield.split(/\b\n/);
-  Logger.log(parseFloat("1.234"));
-  
+  for(var i = 0; i < splitOnLines.length; i++) {
+    splitOnLines[i] = splitOnLines[i].replace(/\s\s+/g, " ");
+  }
 
   for(var i = 0; i < splitOnLines.length; i++){
     var split = splitOnLines[i].split("€");
     split[1] = split[1].replace(",",".");
-    if(dict[split[0]] == null){
-      dict[split[0]] = parseFloat(split[1]);
+    if(discountDict[split[0]] == null){
+      discountDict[split[0]] = parseFloat(split[1]);
     }
-    else {
-      dict[split[0]] += parseFloat(split[1]);
-    }
+    /*else {
+      discountDict[split[0]] += parseFloat(split[1]);
+    }*/
   }
-  Logger.log(dict);
+  AddDiscountOptions(discountDict)
+}
+
+function AddDiscountOptions(discountDict) {
+  // Set the data validation for cell C2:C51 to require a value from the discount dict
+  var cell = SpreadsheetApp.getActive().getRange('C2:C51');
+  var list = []
+  Object.keys(discountDict).forEach(function(key) {
+    list.push(key);
+  });
+  var rule = SpreadsheetApp.newDataValidation().requireValueInList(list).build();
+  cell.setDataValidation(rule);
 }
 
 function compareProducts( a, b ) {
