@@ -135,7 +135,6 @@ function formatText(inputField) {
     var product = {Name : currentName, Amount : newNumber, Price : priceAsFloat};
     products.push(product);
   }
-  products.sort(compareProducts);
   return products;
 }
 
