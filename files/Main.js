@@ -11,7 +11,7 @@
 //Name of the sheet to be duplicated
 var templateName = "Template"
 var ui = SpreadsheetApp.getUi();
-var discountDict = {};
+
 /**
  * This script duplicates a template sheet and renamed it to the current date
  */
@@ -21,11 +21,6 @@ function onOpen() {
   
   var submenuBassoon = [{name:"Formatter", functionName:"setupSideBar"}]
   SpreadsheetApp.getActiveSpreadsheet().addMenu('Fluffy Bassoon', submenuBassoon);
-
-  // FOR TESTING AS ADDON:
-  ui.createMenu("Multi HTML")
-    .addItem("Formatter", "setupSideBar")
-    .addToUi();
 }
 
 /**
@@ -66,39 +61,6 @@ function getDate() {
 /**
 * Fluffy Bassoon
 */
-
-function onEdit(e) {
-  var editRange = { // B2:B51
-    top : 2,
-    bottom : 51,
-    left : 3,
-    right : 3
-  };
-
-  Logger.log(discountDict);
-  // Exit if we're out of range
-  var thisRow = e.range.getRow();
-  if (thisRow < editRange.top || thisRow > editRange.bottom) return;
-
-  var thisCol = e.range.getColumn();
-  if (thisCol < editRange.left || thisCol > editRange.right) return;
-
-  if(discountDict.length == 0) return;
-
-  var getValue = SpreadsheetApp.getActiveSheet().getRange(thisRow, thisCol).getValue();
-  
-  if(getValue == "Error" || getValue == "Dict is empty") return;
-  
-  if(discountDict[getValue] != null) {
-    var newValue = discountDict[getValue];
-    // We're in range; timestamp the edit
-    var ss = e.range.getSheet();
-    ss.getRange(thisRow,thisCol)
-    .setValue(newValue);
-  }
-
-  
-}
 
 function setupSideBar() {
   var html = HtmlService.createTemplateFromFile("index").evaluate();
@@ -174,6 +136,10 @@ function formatText(inputField) {
 
 function calculateDiscounts(discountfield){
   var splitOnLines = discountfield.split(/\b\n/);
+  var discountDict = {};
+  var names = [];
+  var values = [];
+  
   for(var i = 0; i < splitOnLines.length; i++) {
     splitOnLines[i] = splitOnLines[i].replace(/\s\s+/g, " ");
   }
@@ -183,23 +149,59 @@ function calculateDiscounts(discountfield){
     split[1] = split[1].replace(",",".");
     if(discountDict[split[0]] == null){
       discountDict[split[0]] = parseFloat(split[1]);
+      names.push(split[0] + ";");
+      values.push(split[1]);
     }
     /*else {
       discountDict[split[0]] += parseFloat(split[1]);
     }*/
   }
-  AddDiscountOptions(discountDict)
+  PropertiesService.getScriptProperties().setProperty('names', names.toString());
+  PropertiesService.getScriptProperties().setProperty('values', values.toString());
+  AddDiscountOptions();
 }
 
-function AddDiscountOptions(discountDict) {
+function AddDiscountOptions() {
   // Set the data validation for cell C2:C51 to require a value from the discount dict
+  var list = PropertiesService.getScriptProperties().getProperty('names').split(";,");
+  
   var cell = SpreadsheetApp.getActive().getRange('C2:C51');
-  var list = []
-  Object.keys(discountDict).forEach(function(key) {
-    list.push(key);
-  });
   var rule = SpreadsheetApp.newDataValidation().requireValueInList(list).build();
   cell.setDataValidation(rule);
+}
+
+function onEdit(e) {
+  var editRange = { // C2:C51
+    top : 2,
+    bottom : 51,
+    left : 3,
+    right : 3
+  };
+  
+  var names = PropertiesService.getScriptProperties().getProperty('names').split(";,");
+  var values = PropertiesService.getScriptProperties().getProperty('values').split(',');
+  
+  // Exit if we're out of range
+  var thisRow = e.range.getRow();
+  if (thisRow < editRange.top || thisRow > editRange.bottom) return;
+
+  var thisCol = e.range.getColumn();
+  if (thisCol < editRange.left || thisCol > editRange.right) return;
+
+  if(names.length == 0) return;
+
+  var getValue = SpreadsheetApp.getActiveSheet().getRange(thisRow, thisCol).getValue();
+  
+  var index = names.indexOf(getValue);
+  
+  if(index >= 0) {
+    var newValue = values[index];
+    // We're in range; timestamp the edit
+    var ss = e.range.getSheet();
+    ss.getRange(thisRow,thisCol)
+    .setValue(newValue);
+  }
+  
 }
 
 function compareProducts( a, b ) {
