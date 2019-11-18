@@ -149,6 +149,9 @@ function calculateDiscounts(discountfield){
     split[1] = split[1].replace(",",".");
     if(discountDict[split[0]] == null){
       discountDict[split[0]] = parseFloat(split[1]);
+      // add ';' to end of name. This is later usefull for correct splitting of the string
+      // we add an ';', because we need a way to tell the difference between an ',' to split the different values and ',' in the values itself
+      // ',' in the values is then saved as ',' and the ',' to splitt the different values is saved as ";,"
       names.push(split[0] + ";");
       values.push(split[1]);
     }
@@ -156,21 +159,25 @@ function calculateDiscounts(discountfield){
       discountDict[split[0]] += parseFloat(split[1]);
     }*/
   }
+
+  // Saves the two lists as global properties. these are always strings
   PropertiesService.getScriptProperties().setProperty('names', names.toString());
   PropertiesService.getScriptProperties().setProperty('values', values.toString());
   AddDiscountOptions();
 }
 
 function AddDiscountOptions() {
-  // Set the data validation for cell C2:C51 to require a value from the discount dict
+  // get all the names from the property. This uses the ';' to split at the correct point
   var list = PropertiesService.getScriptProperties().getProperty('names').split(";,");
   
+  // add all names to the dropdown
   var cell = SpreadsheetApp.getActive().getRange('C2:C51');
   var rule = SpreadsheetApp.newDataValidation().requireValueInList(list).build();
   cell.setDataValidation(rule);
 }
 
 function onEdit(e) {
+  // this script checks if the user selects a Discount
   var editRange = { // C2:C51
     top : 2,
     bottom : 51,
@@ -178,6 +185,7 @@ function onEdit(e) {
     right : 3
   };
   
+  // Splits the two proporties at the correct points
   var names = PropertiesService.getScriptProperties().getProperty('names').split(";,");
   var values = PropertiesService.getScriptProperties().getProperty('values').split(',');
   
@@ -188,28 +196,19 @@ function onEdit(e) {
   var thisCol = e.range.getColumn();
   if (thisCol < editRange.left || thisCol > editRange.right) return;
 
+  // Exit if we don't have the list
   if(names.length == 0) return;
 
   var getValue = SpreadsheetApp.getActiveSheet().getRange(thisRow, thisCol).getValue();
   
   var index = names.indexOf(getValue);
   
+  // sets the cell to the correct value
   if(index >= 0) {
     var newValue = values[index];
-    // We're in range; timestamp the edit
     var ss = e.range.getSheet();
     ss.getRange(thisRow,thisCol)
     .setValue(newValue);
   }
   
-}
-
-function compareProducts( a, b ) {
-  if ( a.Name < b.Name ){
-    return -1;
-  }
-  if ( a.Name > b.Name ){
-    return 1;
-  }
-  return 0;
 }
