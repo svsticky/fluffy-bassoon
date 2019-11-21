@@ -21,11 +21,6 @@ function onOpen() {
   
   var submenuBassoon = [{name:"Formatter", functionName:"setupSideBar"}]
   SpreadsheetApp.getActiveSpreadsheet().addMenu('Fluffy Bassoon', submenuBassoon);
-
-  // FOR TESTING AS ADDON:
-  ui.createMenu("Multi HTML")
-    .addItem("Formatter", "setupSideBar")
-    .addToUi();
 }
 
 /**
