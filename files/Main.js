@@ -21,6 +21,11 @@ function onOpen() {
   
   var submenuBassoon = [{name:"Formatter", functionName:"setupSideBar"}]
   SpreadsheetApp.getActiveSpreadsheet().addMenu('Fluffy Bassoon', submenuBassoon);
+
+  // FOR TESTING AS ADDON:
+  ui.createMenu("Multi HTML")
+    .addItem("Formatter", "setupSideBar")
+    .addToUi();
 }
 
 /**
@@ -76,6 +81,24 @@ function include(filename) {
 }
 
 function formatButton(inputfieldBp, inputFieldBo) {
+  // Check if the user isn't trying to change the template
+  if(SpreadsheetApp.getActiveSpreadsheet().getActiveSheet().getName() == 'Template') { 
+    Browser.msgBox("The template doesn't need to be filled");
+    return;
+  }
+
+  // Check if the current sheet is empty
+  if(SpreadsheetApp.getActiveSheet().getRange(2, 1).getValue() != "") {
+    // Asks the user if he wants to override the current values
+    var result = ui.alert(
+      'Please confirm',
+      'Are you sure you want to override the current values?',
+      ui.ButtonSet.YES_NO);
+
+    // Process the result
+    if(result == ui.Button.NO) {return;}
+  }
+
   calculateDiscounts(inputFieldBo);
   var products = formatText(inputfieldBp);
 
