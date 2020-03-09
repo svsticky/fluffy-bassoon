@@ -198,7 +198,6 @@ function onEdit(e) {
   // this script checks if the user selects a Discount
   var editRange = { // C2:C51
     top : 2,
-    bottom : 51,
     left : 3,
     right : 3
   };
@@ -209,7 +208,7 @@ function onEdit(e) {
   
   // Exit if we're out of range
   var thisRow = e.range.getRow();
-  if (thisRow < editRange.top || thisRow > editRange.bottom) return;
+  if (thisRow < editRange.top) return;
 
   var thisCol = e.range.getColumn();
   if (thisCol < editRange.left || thisCol > editRange.right) return;
