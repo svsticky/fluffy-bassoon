@@ -3,8 +3,9 @@
   function buttonClick() {
     var inputFieldBp = document.getElementById("inputField_bp").value;
     var inputFieldBo = document.getElementById("inputField_bo").value;
+    var checked = document.getElementById("singleValue").checked;
 
-    google.script.run.formatButton(inputFieldBp, inputFieldBo);
+    google.script.run.formatButton(inputFieldBp, inputFieldBo, checked);
   }
 
   function manualHide() {

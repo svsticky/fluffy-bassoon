@@ -4,7 +4,7 @@
  * Created by Yorick van Zweeden; Bestuur 11 Hoogh!
  * 
  * This script is updated to auto fill the 'facturen' with the data from the Jumbo receipts
- * Version 1.0
+ * Version 2.0
  * Created by Commit 2019-2020
  */
 
@@ -75,7 +75,7 @@ function include(filename) {
   return HtmlService.createHtmlOutputFromFile(filename).getContent();
 }
 
-function formatButton(inputfieldBp, inputFieldBo) {
+function formatButton(inputfieldBp, inputFieldBo, singleValue) {
   // Check if the user isn't trying to change the template
   if(SpreadsheetApp.getActiveSpreadsheet().getActiveSheet().getName() == 'Template') { 
     Browser.msgBox("The template doesn't need to be filled");
@@ -94,7 +94,7 @@ function formatButton(inputfieldBp, inputFieldBo) {
     if(result == ui.Button.NO) {return;}
   }
 
-  calculateDiscounts(inputFieldBo);
+  calculateDiscounts(inputFieldBo, singleValue);
   var products = formatText(inputfieldBp);
 
   for (var i = 2; i <= products.length + 1; i++) {
@@ -152,7 +152,7 @@ function formatText(inputField) {
   return products;
 }
 
-function calculateDiscounts(discountfield){
+function calculateDiscounts(discountfield, singleValue){
   var splitOnLines = discountfield.split(/\b\n/);
   var discountDict = {};
   var names = [];
@@ -173,9 +173,10 @@ function calculateDiscounts(discountfield){
       names.push(split[0] + ";");
       values.push(split[1]);
     }
-    /*else {
+    else if(singleValue == false)
+    {
       discountDict[split[0]] += parseFloat(split[1]);
-    }*/
+    }
   }
 
   // Saves the two lists as global properties. these are always strings
