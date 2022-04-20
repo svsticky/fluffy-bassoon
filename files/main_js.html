@@ -1,11 +1,9 @@
 <script>
 
   function buttonClick() {
-    var inputFieldBp = document.getElementById("inputField_bp").value;
-    var inputFieldBo = document.getElementById("inputField_bo").value;
-    var checked = document.getElementById("singleValue").checked;
+    var pdfText = document.getElementById("pdfText").value;
 
-    google.script.run.formatButton(inputFieldBp, inputFieldBo, checked);
+    google.script.run.formatPDF(pdfText);
   }
 
   function manualHide() {

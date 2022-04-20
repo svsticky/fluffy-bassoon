@@ -75,7 +75,7 @@ function include(filename) {
   return HtmlService.createHtmlOutputFromFile(filename).getContent();
 }
 
-function formatButton(inputfieldBp, inputFieldBo, singleValue) {
+function formatPDF(pdfText) {
   // Check if the user isn't trying to change the template
   if(SpreadsheetApp.getActiveSpreadsheet().getActiveSheet().getName() == 'Template') { 
     Browser.msgBox("The template doesn't need to be filled");
@@ -94,13 +94,14 @@ function formatButton(inputfieldBp, inputFieldBo, singleValue) {
     if(result == ui.Button.NO) {return;}
   }
 
-  calculateDiscounts(inputFieldBo, singleValue);
-  var products = formatText(inputfieldBp);
+  var products = formatPdfText(pdfText);
 
   for (var i = 2; i <= products.length + 1; i++) {
     setCell("A", i, products[i - 2].Name);
+    setCell("B", i, products[i - 2].TotalPrice);
+    setCell("F", i, products[i - 2].TaxPercentage);
     setCell("G", i, products[i - 2].Amount);
-    setCell("B", i, products[i - 2].Price);
+    setCell("H", i, products[i - 2].PricePerProduct);
   }
 
   setupSideBar();
@@ -111,122 +112,28 @@ function setCell(row, inputIndex, output) {
   currentSheet.getRange(row + inputIndex).setValue(output);
 }
 
-function formatText(inputField) {
-  var split = inputField.split(/\b\n/);
+function formatPdfText(pdfText) { 
+  var split = pdfText.split(/\b\n/);
   var products = [];
-
   for (var i = 0; i < split.length; i++) {
-    var currentName = split[i].replace(/\s\s+/g, " ");
+    //NAME PRODUCT WITH SPACES AMOUNT PRICEPERITEM IGNORE TAXPERCENTAGE % TOTALPRICE
+    var info = reverseString(split[i]).split(' ').map(x => reverseString(x)); //perform a split from right to left
+    var totalPrice = commaParseFloat(info[0]);
+    var taxPercentage = commaParseFloat(info[2]) / 100;
+    var pricePerProduct = commaParseFloat(info[4]);
+    var amount = parseInt(info[5]);
+    var name = info.slice(6).join(' ');
 
-    if(currentName === " "){continue;}
-
-    var newNumber = parseInt(split[i]);
-    var checkGrams = split[i].match(/\d+[g]/g);
-
-    if(checkGrams != null) {
-      grams = checkGrams[0].replace("g", "");
-      if(grams == newNumber) {
-        newNumber = 1;
-        currentName = currentName.replace(checkGrams[0], "");
-      }
-      else {
-        currentName = currentName.replace(newNumber, "");
-      }
-    }
-    else {
-      currentName = currentName.replace(newNumber, "");
-    }
-
-    var newPrice = currentName.match(/(€ \d+\,\d{1,2})/g);
-    newPrice = newPrice[0].match(/(\d+\,\d{1,2})/g);
-    var newPriceDot = newPrice[0].replace(",", ".");
-    var priceAsFloat = parseFloat(newPriceDot);
-
-    if(priceAsFloat === 0.0){continue;}
-
-    currentName = currentName.replace('€ ' + newPrice, "");
-
-    var product = {Name : currentName, Amount : newNumber, Price : priceAsFloat};
+    var product = {Name : name, TotalPrice : totalPrice, TaxPercentage : taxPercentage, Amount : amount, PricePerProduct : pricePerProduct};
     products.push(product);
   }
   return products;
 }
 
-function calculateDiscounts(discountfield, singleValue){
-  var splitOnLines = discountfield.split(/\b\n/);
-  var discountDict = {};
-  var names = [];
-  var values = [];
-  
-  for(var i = 0; i < splitOnLines.length; i++) {
-    splitOnLines[i] = splitOnLines[i].replace(/\s\s+/g, " ");
-  }
-
-  for(var i = 0; i < splitOnLines.length; i++){
-    var split = splitOnLines[i].split("€");
-    split[1] = split[1].replace(",",".");
-    if(discountDict[split[0]] == null){
-      discountDict[split[0]] = parseFloat(split[1]);
-      // add ';' to end of name. This is later usefull for correct splitting of the string
-      // we add an ';', because we need a way to tell the difference between an ',' to split the different values and ',' in the values itself
-      // ',' in the values is then saved as ',' and the ',' to splitt the different values is saved as ";,"
-      names.push(split[0] + ";");
-      values.push(split[1]);
-    }
-    else if(singleValue == false)
-    {
-      discountDict[split[0]] += parseFloat(split[1]);
-    }
-  }
-
-  // Saves the two lists as global properties. these are always strings
-  PropertiesService.getScriptProperties().setProperty('names', names.toString());
-  PropertiesService.getScriptProperties().setProperty('values', values.toString());
-  AddDiscountOptions();
+function commaParseFloat(commaStr) {
+  return parseFloat(commaStr.replace(",", "."));
 }
 
-function AddDiscountOptions() {
-  // get all the names from the property. This uses the ';' to split at the correct point
-  var list = PropertiesService.getScriptProperties().getProperty('names').split(";,");
-  
-  // add all names to the dropdown
-  var cell = SpreadsheetApp.getActive().getRange('C2:C51');
-  var rule = SpreadsheetApp.newDataValidation().requireValueInList(list).build();
-  cell.setDataValidation(rule);
-}
-
-function onEdit(e) {
-  // this script checks if the user selects a Discount
-  var editRange = { // C2:C51
-    top : 2,
-    left : 3,
-    right : 3
-  };
-  
-  // Splits the two proporties at the correct points
-  var names = PropertiesService.getScriptProperties().getProperty('names').split(";,");
-  var values = PropertiesService.getScriptProperties().getProperty('values').split(',');
-  
-  // Exit if we're out of range
-  var thisRow = e.range.getRow();
-  if (thisRow < editRange.top) return;
-
-  var thisCol = e.range.getColumn();
-  if (thisCol < editRange.left || thisCol > editRange.right) return;
-
-  // Exit if we don't have the list
-  if(names.length == 0) return;
-
-  var getValue = SpreadsheetApp.getActiveSheet().getRange(thisRow, thisCol).getValue();
-  
-  var index = names.indexOf(getValue);
-  
-  // sets the cell to the correct value
-  if(index >= 0) {
-    var newValue = values[index];
-    var ss = e.range.getSheet();
-    ss.getRange(thisRow,thisCol)
-    .setValue(newValue);
-  }
-  
+function reverseString(str) {
+  return str.split("").reverse().join("");
 }
