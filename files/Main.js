@@ -113,18 +113,29 @@ function setCell(row, inputIndex, output) {
 }
 
 function formatPdfText(pdfText) { 
-  var split = pdfText.split(/\b\n/);
+  var split = pdfText.split(/\n/);
   var products = [];
-  for (var i = 0; i < split.length; i++) {
+  for (let i = 0; i < split.length; i++) {
     //NAME PRODUCT WITH SPACES AMOUNT PRICEPERITEM IGNORE TAXPERCENTAGE % TOTALPRICE
-    var info = reverseString(split[i]).split(' ').map(x => reverseString(x)); //perform a split from right to left
-    var totalPrice = commaParseFloat(info[0]);
-    var taxPercentage = commaParseFloat(info[2]) / 100;
-    var pricePerProduct = commaParseFloat(info[4]);
-    var amount = parseInt(info[5]);
-    var name = info.slice(6).join(' ');
-
-    var product = {Name : name, TotalPrice : totalPrice, TaxPercentage : taxPercentage, Amount : amount, PricePerProduct : pricePerProduct};
+    let info = reverseString(split[i]).split(' ').map(x => reverseString(x)); //perform a split from right to left
+    if (info[0] == '-') {
+      info = info.slice(1);
+      info[0] = '-' + info[0];
+    }
+    let totalPrice = commaParseFloat(info[0]);
+    let taxPercentage = commaParseFloat(info[2]) / 100;
+    let product;
+    if (info[info.length - 1] != 'EMBALLAGE') {
+      let pricePerProduct = commaParseFloat(info[4]);
+      let amount = parseInt(info[5]);
+      let name = info.slice(6).reverse().join(' ');
+      product = {Name : name, TotalPrice : totalPrice, TaxPercentage : taxPercentage, Amount : amount, PricePerProduct : pricePerProduct};
+    }
+    else {
+      let name = info.slice(3).reverse().join(' ');
+      product = {Name : name, TotalPrice : totalPrice, TaxPercentage : taxPercentage, Amount : 1, PricePerProduct : totalPrice};
+    }
+    
     products.push(product);
   }
   return products;
